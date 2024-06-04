@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rain</title>
+</head>
+<body style="margin: 0;">
+    <canvas id="canv"></canvas>
+
+    <script>
+        'use strict';
+        const g = 0.009;
+        let c, ctx, W, H;
+        let raindrops = [];
+
+        class RainParticles {
+            constructor(){
+                this.x = Math.random() * W;
+                this.y = 0;
+                this.vy = Math.random() * (2-1) + 1;
+            }
+            update(){
+                this.vy += g;
+                this.y += this.vy;
+            }
+            draw(){
+                ctx.fillRect(this.x, this.y, 1, 10);
+            }
+        }
+        const setup = () => {
+            c = document.getElementById('canv');
+            ctx = c.getContext('2d');
+            c.width = W = window.innerWidth;
+            c.height = H = window.innerHeight;
+
+            window.requestAnimationFrame(animate);
+        }
+
+        const animate = () => {
+            ctx.fillStyle = 'rgba(0,0,0,0.25)';
+            ctx.fillRect(0, 0, W, H);
+            raindrops.push(new RainParticles());
+            ctx.fillStyle = 'rgb(255,255,255)';
+            for (let i = raindrops.length-1; i>0; i--){
+                raindrops[i].update();
+                raindrops[i].draw();
+                if(raindrops[i].y >= c.height){
+                    raindrops.splice(i,1);
+                }
+            }
+            window.requestAnimationFrame(animate);
+        }
+        window.onload = setup;
+    </script>
+
+</body>
+</html>
